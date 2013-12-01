@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:fc="http://xmlns.jcp.org/jsf/composite/framework/components"
+                xmlns:p="http://primefaces.org/ui">
+    <div class="row">
+        <span class="lead">S</span>cripting Console
+
+        <div class="pull-right">
+            <p:commandButton value="Execute" action="#{scriptExecutor.invokeAction}" update="debugConsole"
+                             styleClass="btn btn-primary"/>
+        </div>
+        <p/>
+
+        <p/>
+        <h:panelGroup layout="block" id="debugConsole" styleClass="form-horizontal">
+
+            <fc:selectOneMenu label="Script Engine" value="#{scriptExecutor.engineName}" noSelectionOption="false"
+                              editable="true" options="#{scriptExecutor.availableScriptEngines}"/>
+
+            <fc:inputTextArea label="Script" value="#{scriptExecutor.script}"
+                              placeholder="The script to execute." style="width:100%"
+                              editable="true" helpText="The script to execute."/>
+
+            <div class="form-group" style="margin-top:10px; margin-bottom:0">
+                <h:outputLabel styleClass="col-md-2 control-label" value="Result"/>
+
+                <div class="col-md-10 from-control">
+                    <h:outputText styleClass="uneditable-textarea" value="#{scriptExecutor.output}" escape="false"/>
+                </div>
+            </div>
+
+        </h:panelGroup>
+    </div>
+</ui:composition>
