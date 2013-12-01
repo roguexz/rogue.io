@@ -1,0 +1,78 @@
+/*
+ * Copyright 2013, Rogue.IO
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Project properties
+ */
+ext {
+    gaeAppName = 'rogue-io'
+    gaeAppVersion = 'alpha-1'
+
+    gaeArtifactName = 'appengine-java-sdk'
+    gaeArtifactGroup = 'com.google.appengine'
+    gaeArtifactVersion = '1.8.8'
+
+    gaeSdkFldrPath = file(gaeArtifactName + File.separator + gaeArtifactName + '-' + gaeArtifactVersion).absolutePath
+    gaeSdkFldr = file(ext.gaeSdkFldrPath)
+
+    // Versions of libraries that are imported in more than one module - Helps with controlling them centrally.
+    jsfVersion = '2.2.4'
+    primeFacesVersion = '4.0'
+}
+
+allprojects {
+
+    apply plugin: 'idea'
+
+    buildDir = file(rootDir.path + File.separator + 'tmp' + File.separator + rootProject.relativePath(projectDir))
+
+    // Internal variables - do not modify, unless you know what you are doing.
+    repositories {
+
+        flatDir {
+            dirs new File(rootDir, 'lib')
+        }
+
+        mavenCentral();
+
+        maven {
+            url 'https://maven.java.net/content/repositories/releases/'
+        }
+
+        maven {
+            url 'http://repository.primefaces.org'
+        }
+    }
+
+    idea {
+        project {
+            languageLevel = '1.7'
+        }
+    }
+
+    apply from: rootProject.file('infra/gae-integration.gradle')
+}
+
+subprojects { project ->
+    apply from: rootProject.file('infra/common.gradle')
+}
+
+/**
+ * Setup the local environment.
+ */
+task setupEnv(dependsOn: 'setup_GAE_SDK') << {
+}
+

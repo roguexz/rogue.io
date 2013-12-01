@@ -1,0 +1,14 @@
+# Ignore the following directories
+# The local GAE/J setup directory
+appengine-java-sdk/
+
+# The build artifacts directory
+tmp/
+
+# The project files - those should be created locally
+*.iws
+*.ipr
+*.iml
+
+# Other build artifacts
+.gradle

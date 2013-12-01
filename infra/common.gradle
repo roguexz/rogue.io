@@ -1,0 +1,101 @@
+/*
+ * Copyright 2013, Rogue.IO
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Common application wide settings that will be included in each of the sub projects.
+ */
+
+apply plugin: 'java'
+
+ant.importBuild new File(rootDir, 'infra/integration-build.xml').absolutePath
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+configurations {
+    provided
+    jdo {
+        extendsFrom compile
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            compileClasspath += configurations.provided
+        }
+    }
+}
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
+dependencies {
+    compile fileTree(dir: rootProject.ext.gaeSdkFldrPath + '/lib/user/', include: '**/appengine-api-1.0-sdk*.jar')
+    compile fileTree(dir: rootProject.ext.gaeSdkFldrPath + '/lib/opt/user', include: 'appengine-api-labs/v1/*.jar')
+    compile fileTree(dir: rootProject.ext.gaeSdkFldrPath + '/lib/opt/user', include: 'jsr107/v1/*.jar')
+    compile fileTree(dir: rootProject.ext.gaeSdkFldrPath + '/lib/opt/user', include: 'datanucleus/v2/*.jar')
+
+    jdo fileTree(dir: rootProject.ext.gaeSdkFldrPath + '/lib/opt/tools/datanucleus/v2', include: 'datanucleus-enhancer*.jar')
+
+    envsetup gaeArtifactGroup + ':' + gaeArtifactName + ':' + gaeArtifactVersion
+}
+
+File enhancedClassesDir = new File(file(buildDir), 'enhanced-classes');
+
+classes.doLast {
+
+    if (!enhancedClassesDir.exists()) {
+        enhancedClassesDir.mkdir()
+    }
+
+    // Execute the DataNucleus enhancer if required
+    if (project.ext.has('enhanceClasses')) {
+        tasks['processEntityClasses'].execute()
+    }
+}
+
+task processEntityClasses {
+
+    inputs.dir sourceSets.main.output.classesDir
+    outputs.dir enhancedClassesDir
+
+    doLast {
+        ant.properties['gaeSdkPath'] = rootProject.gaeSdkFldrPath
+        ant.properties['classesDir'] = sourceSets.main.output.classesDir.canonicalPath.toURI().toString()
+        ant.properties['enhancedClassesDir'] = enhancedClassesDir.canonicalPath.toURI().toString()
+        ant.properties['compileClassPath'] = configurations.jdo.asPath + ':' + configurations.provided.asPath
+
+        tasks['enhanceClasses'].execute()
+    }
+}
+
+jar {
+    duplicatesStrategy 'warn'
+    from enhancedClassesDir
+
+    eachFile { copyDetails ->
+        String path = copyDetails.getPath()
+
+        boolean fromClassesDir = !copyDetails.file.absolutePath.startsWith(enhancedClassesDir.absolutePath);
+        if (fromClassesDir) {
+            // If this file exists in the enhancedClasses directory, then exclude it
+            File f = new File(enhancedClassesDir, path);
+
+            if (f.exists()) {
+                copyDetails.exclude()
+            }
+        }
+    }
+}
