@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:fc="http://xmlns.jcp.org/jsf/composite/framework/components"
+                template="/framework/templates/admin/resource-details.xhtml">
+    <ui:define name="section.content">
+        <div class="form-horizontal">
+            <fc:inputText label="Name" value="#{controllerCtx.current.selectedResource.name}"
+                          placeholder="The name of the city"
+                          editable="#{controllerCtx.current.selectedResource.mutable}"
+                          required="true" requiredMessage="Specify a name."
+                          validator="#{controllerCtx.current.nameValidator.validate}"
+                          validatorMessage="A city with this name already exists"/>
+
+            <fc:inputText label="Alternate Name" editable="#{controllerCtx.current.selectedResource.mutable}"
+                          placeholder="Any other alternate name?"
+                          value="#{controllerCtx.current.selectedResource.alternateName}"
+                          validator="#{controllerCtx.current.nameValidator.validate}"
+                          validatorMessage="A city with this name already exists"/>
+
+            <fc:selectOneMenu label="State" value="#{controllerCtx.current.selectedResource.state}" immediate="true"
+                              editable="#{controllerCtx.current.selectedResource.mutable}"
+                              options="#{controllerCtx.current.parentController.items}"
+                              noSelectionOption="false"
+                              converter="#{controllerCtx.current.parentController.converter}"/>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fc="http://xmlns.jcp.org/jsf/composite/framework/components"
+                template="/framework/templates/admin/resource-details.xhtml">
+    <ui:define name="section.content">
+        <div class="col-md-6">
+            <div class="form-horizontal">
+                <fc:inputText editable="#{controllerCtx.current.selectedResource.mutable}" label="Country"
+                              placeholder="Enter the 2 character country code"
+                              value="#{controllerCtx.current.selectedResource.country}"
+                              required="true" requiredMessage="Specify the country"
+                              helpText="The value should be IN"/>
+
+                <fc:inputText editable="#{controllerCtx.current.selectedResource.mutable}" label="Region 1"
+                              placeholder="Region 1"
+                              value="#{controllerCtx.current.selectedResource.region1}"
+                              required="true" requiredMessage="Region 1 is required"
+                              helpText="State or Union Territory"/>
+
+                <fc:inputText editable="#{controllerCtx.current.selectedResource.mutable}" label="Region 2"
+                              placeholder="Region 2"
+                              value="#{controllerCtx.current.selectedResource.region2}"
+                              helpText="Division"/>
+
+                <fc:inputText editable="#{controllerCtx.current.selectedResource.mutable}" label="Region 3"
+                              placeholder="Region 3"
+                              value="#{controllerCtx.current.selectedResource.region3}"
+                              helpText="District"/>
+
+                <fc:inputText editable="#{controllerCtx.current.selectedResource.mutable}" label="Region 4"
+                              placeholder="Region 4"
+                              value="#{controllerCtx.current.selectedResource.region3}"
+                              helpText="Taluk"/>
+
+                <fc:inputText label="Name" value="#{controllerCtx.current.selectedResource.name}" placeholder="Name"
+                              editable="#{controllerCtx.current.selectedResource.mutable}"
+                              required="true" requiredMessage="Specify a name."/>
+
+                <fc:inputText label="Zip code" editable="#{controllerCtx.current.selectedResource.mutable}"
+                              value="#{controllerCtx.current.selectedResource.zipCode}" placeholder="Zip code"
+                              validator="#{controllerCtx.current.zipCodeValidator.validate}"
+                              validatorMessage="A region with this zip code already exists"/>
+
+                <fc:inputText editable="#{controllerCtx.current.selectedResource.mutable}" label="Latitude"
+                              value="#{controllerCtx.current.selectedResource.latitude}" placeholder="Latitude"
+                              required="true" requiredMessage="Specify the location's latitude"/>
+
+                <fc:inputText editable="#{controllerCtx.current.selectedResource.mutable}" label="Longitude"
+                              value="#{controllerCtx.current.selectedResource.longitude}" placeholder="Longitude"
+                              required="true" requiredMessage="Specify the location's longitude"/>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-horizontal">
+                <style>
+                    img
+                    {
+                        max-width: inherit;
+                    }
+                </style>
+                <h:panelGroup layout="block" id="maps">
+                    <p:gmap center="#{selectedResource.latitude} , #{selectedResource.longitude}" zoom="15"
+                            type="ROADMAP" style="height:400px;" model="#{controllerCtx.current.mapModel}"/>
+                </h:panelGroup>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

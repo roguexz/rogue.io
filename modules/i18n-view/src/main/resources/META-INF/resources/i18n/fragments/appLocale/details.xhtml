@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:fc="http://xmlns.jcp.org/jsf/composite/framework/components"
+                template="/framework/templates/admin/resource-details.xhtml">
+    <ui:define name="section.content">
+        <div class="form-horizontal">
+            <fc:selectOneMenu label="Language" value="#{controllerCtx.current.selectedResource.language}"
+                              required="true" requiredMessage="Language is required"
+                              options="#{controllerCtx.current.controllerCollection['languages'].items}"
+                              editable="#{controllerCtx.current.selectedResource.mutable}" noSelectionOption="false"
+                              helpText="Select the language represented by this locale"
+                              converter="#{controllerCtx.current.controllerCollection['languages'].converter}"/>
+
+            <fc:selectOneMenu label="Country" value="#{controllerCtx.current.selectedResource.country}"
+                              options="#{controllerCtx.current.controllerCollection['countries'].items}"
+                              editable="#{controllerCtx.current.selectedResource.mutable}" noSelectionOption="true"
+                              helpText="Select the country represented by this locale"
+                              converter="#{controllerCtx.current.controllerCollection['countries'].converter}"/>
+        </div>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:param name="selector" value="#{selector != null ? selector : citySelector}"/>
+
+    <!-- Selector for country -->
+    <div class="control-group" style="margin-top:10px; margin-bottom:0">
+        <h:outputLabel styleClass="control-label" for="selectCountry" value="Country"/>
+
+        <div class="controls">
+            <p:selectOneMenu id="selectCountry" value="#{selector.countriesController.selectedResource}"
+                             disabled="#{!address.mutable}"
+                             converter="#{selector.countriesController.converter}"
+                             required="true" requiredMessage="Select a country">
+                <f:selectItem noSelectionOption="true" itemLabel="Select a country" itemDescription="Select a country"/>
+                <f:selectItems value="#{selector.countriesController.items}"
+                               var="item" itemLabel="#{item}" itemValue="#{item}"/>
+                <p:ajax update="selectState,selectCity" immediate="true"/>
+            </p:selectOneMenu>
+            <h:panelGroup layout="block" class="help-block">
+                <i class="muted">E.g., India</i>
+            </h:panelGroup>
+
+            <div class="alert alert-error" style="padding:0px 35px; border:none;">
+                <h:message for="selectCountry"/>
+            </div>
+        </div>
+    </div>
+
+    <!-- Selector for state -->
+    <div class="control-group" style="margin-top:10px; margin-bottom:0">
+        <h:outputLabel styleClass="control-label" for="selectState" value="State"/>
+
+        <div class="controls">
+            <p:selectOneMenu id="selectState"
+                             value="#{selector.countriesController.statesController.selectedResource}"
+                             disabled="#{!(address.mutable and selector.countriesController.selectedResource != null)}"
+                             converter="#{selector.countriesController.statesController.converter}"
+                             required="true" requiredMessage="Select a state.">
+                <f:selectItem noSelectionOption="true" itemLabel="Select a state" itemDescription="Select a state"/>
+                <f:selectItems value="#{selector.countriesController.statesController.items}"
+                               var="item" itemLabel="#{item}" itemValue="#{item}"/>
+                <p:ajax update="selectCity"/>
+            </p:selectOneMenu>
+            <h:panelGroup layout="block" class="help-block">
+                <i class="muted">E.g., Karnataka</i>
+            </h:panelGroup>
+
+            <div class="alert alert-error" style="padding:0px 35px; border:none;">
+                <h:message for="selectState"/>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Selector for city -->
+    <div class="control-group" style="margin-top:10px; margin-bottom:0">
+        <h:outputLabel styleClass="control-label" for="selectCity" value="City"/>
+
+        <div class="controls">
+            <p:selectOneMenu id="selectCity" value="#{address.city}"
+                             disabled="#{!(address.mutable and selector.countriesController.statesController.selectedResource != null)}"
+                             converter="#{selector.countriesController.statesController.citiesController.converter}"
+                             required="true" requiredMessage="Select a city.">
+                <f:selectItem noSelectionOption="true" itemLabel="Select a city" itemDescription="Select a city"/>
+                <f:selectItems value="#{selector.countriesController.statesController.citiesController.items}"
+                               var="item" itemLabel="#{item}" itemValue="#{item}"/>
+            </p:selectOneMenu>
+            <h:panelGroup layout="block" class="help-block">
+                <i class="muted">E.g., Bangalore</i>
+            </h:panelGroup>
+
+            <div class="alert alert-error" style="padding:0px 35px; border:none;">
+                <h:message for="selectCity"/>
+            </div>
+        </div>
+    </div>
+</ui:composition>

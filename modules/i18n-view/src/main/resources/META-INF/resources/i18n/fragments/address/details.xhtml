@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--
+Fragment for address details.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:r="http://xmlns.jcp.org/jsf/composite/framework"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:param name="address" value="#{controllerRef.selectedResource}"/>
+
+    <div class="span6">
+        <h:panelGroup layout="block" class="form-horizontal" id="addressDetails">
+            <fieldset>
+                <legend>Information</legend>
+
+                <r:mutableTextField label="Contact Person" value="#{address.name}"
+                                    editable="#{address.mutable}"
+                                    helpText="Who should be contacted at this address?"
+                                    required="true" requiredMessage="Specify a contact name."/>
+
+                <r:mutableTextField label="Flat #, Building Name" value="#{address.address1}"
+                                    required="true" requiredMessage="Required"
+                                    helpText="E.g., 105 Acme Apartments"
+                                    editable="#{address.mutable}"/>
+
+                <r:mutableTextField label="Street / Road Name" value="#{address.address2}"
+                                    helpText="E.g., M.G. Road"
+                                    editable="#{address.mutable}"/>
+
+                <r:mutableTextField label="Locality" value="#{address.locality}"
+                                    required="true" requiredMessage="Required"
+                                    helpText="E.g., Ulsoor"
+                                    editable="#{address.mutable}"/>
+
+                <ui:include src="/WEB-INF/fragments/address/includes/inputSelectCity.xhtml">
+                    <ui:param name="address" value="#{address}"/>
+                    <ui:param name="selector" value="#{controllerRef.citySelector}"/>
+                </ui:include>
+
+                <r:mutableTextField label="Postal Code" value="#{address.postalCode}" styleClass="numeric"
+                                    required="true" requiredMessage="Postal code is required"
+                                    helpText="E.g., 560001"
+                                    editable="#{address.mutable}"/>
+
+            </fieldset>
+            <script type="text/javascript">
+                initNumericValidators();
+            </script>
+        </h:panelGroup>
+    </div>
+
+    <div class="span6">
+        <div class="form-horizontal">
+            <style>
+                img {
+                    max-width: inherit;
+                }
+            </style>
+            <fieldset>
+                <legend>
+                    Location
+                    <h:panelGroup layout="block" styleClass="pull-right btn-group" rendered="#{address.mutable}">
+                        <p:commandLink id="refreshMarker" alt="Update Map" title="Update Map"
+                                       styleClass="btn" update="maps addressDetails refreshMarkerMessages"
+                                       actionListener="#{controllerRef.refreshMarker}">
+                            <i class="icon-refresh"></i>
+                        </p:commandLink>
+                        <p:commandLink id="deleteMarker" alt="Clear Map" title="Clear Map"
+                                       styleClass="btn" update="maps refreshMarkerMessages" immediate="true"
+                                       actionListener="#{controllerRef.deleteMarker}">
+                            <i class="icon-trash"></i>
+                        </p:commandLink>
+                    </h:panelGroup>
+                </legend>
+                <div class="alert alert-error" style="padding:0px 35px; border:none; margin-bottom: 0px;">
+                    <h:message for="refreshMarker" id="refreshMarkerMessages"/>
+                </div>
+                <h:panelGroup layout="block" id="maps">
+                    <p:gmap center="#{address.geoPoint}" zoom="15" type="ROADMAP" style="height:400px;"
+                            model="#{controllerRef.mapModel}"
+                            rendered="#{address.geoPoint != null}">
+                        <p:ajax event="markerDrag"
+                                listener="#{controllerRef.onMarkerDrag}"/>
+                    </p:gmap>
+                    <c:if test="#{address.geoPoint == null}">
+                        No location available. Enter the address and click on the refresh icon above.
+                    </c:if>
+                </h:panelGroup>
+                <c:if test="#{address.mutable}">
+                    <r:mutableBooleanField label="Display the GMaps Query?" editable="true"
+                                           value="#{controllerRef.showDebugLog}"/>
+                </c:if>
+            </fieldset>
+        </div>
+    </div>
+</ui:composition>
