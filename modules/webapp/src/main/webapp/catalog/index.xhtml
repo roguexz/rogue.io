@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:site="http://xmlns.jcp.org/jsf/composite/site"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templates/catalog-display-template.xhtml">
+    <ui:define name="page.title">
+        Products
+    </ui:define>
+
+    <ui:define name="catalog.page.content">
+        <style type="text/css">
+            .ui-widget-content, .ui-widget-header
+            {
+                border: none;
+            }
+
+            .ui-datagrid-content
+            {
+                min-height: 400px;
+            }
+
+            .ui-paginator
+            {
+                background-color: transparent;
+            }
+        </style>
+        <p:dataGrid var="product" value="#{catalog.products.dataModel}" columns="3" rows="12" paginator="true"
+                    emptyMessage="No products available" lazy="true" paginatorPosition="bottom"
+                    paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                    style="min-height: 400px;">
+            <site:product style="max-width:275px; min-height:150px;" value="#{product}"/>
+        </p:dataGrid>
+    </ui:define>
+</ui:composition>

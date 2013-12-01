@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fc="http://xmlns.jcp.org/jsf/composite/framework/components"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{site.adminPageTemplate}">
+
+    <ui:param name="formType" value="multipart/form-data"/>
+    <ui:define name="page.title">System Configuration</ui:define>
+    <ui:define name="page.content">
+        <h3>System Configuration</h3>
+
+        <p/>
+
+        <p/>
+        <span class="lead">W</span>elcome to the system configuration screen. Think of this as an easy to use screen to setup
+        the key configurations of your application.
+        <div class="pull-right">
+            <p:commandButton value="Save" action="#{systemConfiguration.invokeSaveCommand}" update="@all"
+                             styleClass="btn btn-primary"/>
+        </div>
+        <p/>
+
+        <h:panelGroup id="configOptions" styleClass="form-horizontal">
+            <fieldset>
+                <p class="text-muted">Basic site configuration details.</p>
+
+                <fc:inputText label="Site name" value="#{systemConfiguration.appProperties['site.name']}"
+                              placeholder="E.g., Rogue.IO"
+                              editable="true" required="true" requiredMessage="Specify a name for this web site."
+                              helpText="What would you like to call your site?"/>
+
+                <fc:inputText label="Site copyright" placeholder="E.g., Copyright 2013, Rogue.IO"
+                              value="#{systemConfiguration.appProperties['site.copyright']}"
+                              editable="true" helpText="That message that you see at the bottom of the page."/>
+
+                <fc:inputText label="Admin URL" placeholder="E.g., /admin"
+                              value="#{systemConfiguration.appProperties['site.admin.url']}" editable="true"
+                              helpText="The admin URL."/>
+
+                <fc:inputText label="Application email ID"
+                              placeholder="E.g., app@rogue.io"
+                              value="#{systemConfiguration.appProperties['site.email.id']}"
+                              editable="true" required="true" requiredMessage="Specify the email id."
+                              helpText="This is the id that will be used for all system generated mails.">
+                    <f:validator for="value" validatorId="user.email.validator"/>
+                </fc:inputText>
+
+                <fc:inputText label="Application name"
+                              placeholder="E.g., Rogue.IO"
+                              value="#{systemConfiguration.appProperties['site.email.display.name']}"
+                              editable="true"
+                              helpText="This is the name used when sending system generated mails. In most probability you will want to keep this the same as the site's name."/>
+            </fieldset>
+        </h:panelGroup>
+    </ui:define>
+
+</ui:composition>
+
+
+
+
+
+

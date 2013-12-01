@@ -1,0 +1,104 @@
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                template="#{site.adminPageTemplate}">
+
+    <ui:define name="page.content">
+        <h3>Administer your application</h3>
+
+        <p/>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Catalog Settings</h3>
+                    </div>
+                    <div class="panel-body">
+                        Manage the products, categories and brands being sold on this application.
+                        <ul>
+                            <li>
+                                <h:link outcome="#{admin['categories'].listingPageMetadata.outcome}"
+                                        value="Product Categories"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{admin['brands'].listingPageMetadata.outcome}" value="Brands"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{admin['products'].listingPageMetadata.outcome}" value="Products"/>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Localization Settings</h3>
+                    </div>
+                    <div class="panel-body">
+                        Manage the internationalization support for your application.
+                        <ul>
+                            <li>
+                                <h:link outcome="#{admin['countries'].listingPageMetadata.outcome}" value="Countries"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{admin['languages'].listingPageMetadata.outcome}" value="Languages"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{admin['locales'].listingPageMetadata.outcome}" value="Locales"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{admin['translations'].listingPageMetadata.outcome}"
+                                        value="Translations"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{admin['geo-codes'].listingPageMetadata.outcome}" value="Geo Codes"/>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">System Settings</h3>
+                    </div>
+                    <div class="panel-body">
+                        Administer users, global system properties, etc.
+                        <ul>
+                            <li>
+                                <h:link outcome="#{admin['users'].listingPageMetadata.outcome}"
+                                        value="Users"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{admin['attributes'].listingPageMetadata.outcome}"
+                                        value="System properties"/>
+                            </li>
+                        </ul>
+                        You can also run through the <a href="/admin/setup">system setup</a> screen to get started.
+                        <p/>
+                        Use the <a href="/admin/debug">scripting console</a> for quick debugging.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>
