@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:rf="http://rogue.io/jsf/functions"
+                template="/framework/templates/admin/resource-listing.xhtml">
+    <!-- Overrides for the various variables -->
+    <ui:param name="delDlgWidgetVar" value="appPropertyDeleteDialog"/>
+    <ui:param name="delDlgContentKey" value="appPropertyDeleteDialogContent"/>
+    <ui:param name="updateRef" value="appPropertyTable"/>
+    <ui:param name="attrDlgWidgetVar" value="appPropertyDialog"/>
+    <ui:param name="attrDlgContentKey" value="appPropertyContent"/>
+
+    <script type="text/javascript">
+        function handleSaveRequest(xhr, status, args) {
+            if (!args.validationFailed) {
+                #{attrDlgWidgetVar}
+            .
+                hide();
+            }
+        }
+    </script>
+    <p:dialog header="New Attribute" widgetVar="#{attrDlgWidgetVar}" modal="true">
+        <h:panelGroup id="nA_pGrp1" binding="#{requestScope[attrDlgContentKey]}">
+            <h:panelGrid id="nA_pGrid1" columns="3"
+                         rendered="#{controllerCtx.current.selectedResource != null}">
+                <h:outputLabel for="nA_it1">Name</h:outputLabel>
+                <h:inputText id="nA_it1" value="#{controllerCtx.current.selectedResource.name}"
+                             validator="#{controllerCtx.current.nameValidator.validate}"/>
+                <p:message for="nA_it1"/>
+
+                <h:outputLabel for="nA_it2">Value</h:outputLabel>
+                <h:inputText id="nA_it2" value="#{controllerCtx.current.selectedResource.selectedResource}"/>
+                <p:message for="nA_it2"/>
+            </h:panelGrid>
+        </h:panelGroup>
+        <f:facet name="footer">
+            <p:commandButton value="Cancel" style="float:right" icon="ui-icon-close" alt="Save" title="Save"
+                             actionListener="#{controllerCtx.current.cancelCommand.invokeActionListener}"
+                             oncomplete="#{attrDlgWidgetVar}.hide()"/>
+
+            <p:commandButton value="Save" style="float:right" icon="ui-icon-disk" alt="Save" title="Save"
+                             actionListener="#{controllerCtx.current.saveCommand.invokeActionListener}"
+                             oncomplete="handleSaveRequest(xhr, status, args)" update="#{updateRef} nA_pGrid1"/>
+        </f:facet>
+    </p:dialog>
+
+    <!-- No action bar -->
+    <ui:define name="action.bar"/>
+
+    <ui:define name="section.content">
+        <p:dataTable id="dataTable" value="#{controllerCtx.current.dataModel}" var="entity" paginator="true" rows="10"
+                     paginatorPosition="bottom" rowsPerPageTemplate="10,50,100"
+                     selection="#{controllerCtx.current.selectedResources}" lazy="true">
+            <p:column selectionMode="multiple" style="width:18px;"/>
+            <p:column headerText="Name" style="white-space:nowrap;">
+                <p:commandLink actionListener="#{controllerCtx.current.viewCommand.invokeActionListener}"
+                               action="#{controllerCtx.current.viewCommand.invokeAction}" value="#{entity.name}">
+                    <f:setPropertyActionListener value="#{entity}"
+                                                 target="#{controllerCtx.current.viewCommand.selectedResource}"/>
+                </p:commandLink>
+            </p:column>
+            <p:column headerText="Value">
+                <h:outputText value="#{rf:truncate(entity.value, 50)}" title="#{entity.value}"/>
+            </p:column>
+            <p:column headerText="Description">
+                <h:outputText value="#{rf:truncate(entity.description, 50)}" title="#{entity.description}"/>
+            </p:column>
+            <p:column headerText="Actions" style="width:100px;">
+                <ui:include src="/framework/templates/admin/resource-listing-actions.xhtml">
+                    <ui:param name="data" value="#{entity}"/>
+                </ui:include>
+            </p:column>
+        </p:dataTable>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+        >
+    <composite:interface name="inputImage" displayName="Input Image">
+        <composite:attribute name="label" required="true"/>
+        <composite:attribute name="value" required="true"/>
+        <composite:attribute name="tempImageKey" required="true"/>
+        <composite:attribute name="uploadListener" required="true"
+                             method-signature="void handleFileUpload(org.primefaces.event.FileUploadEvent)"/>
+        <composite:attribute name="editable" required="true" type="boolean"/>
+    </composite:interface>
+    <composite:implementation>
+
+        <div id="#{cc.clientId}" class="row">
+            <h:panelGroup rendered="#{cc.attrs.editable}" styleClass="row">
+                <p:message for="up1" id="imgUploadMessages"/>
+                <p:fileUpload mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                              auto="true" uploadLabel="Upload"
+                              fileUploadListener="#{cc.attrs.uploadListener}"
+                              id="up1" sizeLimit="1000000"
+                              oncomplete="updateImage()">
+                </p:fileUpload>
+                <p:remoteCommand name="updateImage"
+                                 update="imageHolder imgUploadMessages"/>
+                <hr/>
+            </h:panelGroup>
+            <h:panelGroup id="imageHolder" rendered="#{cc.attrs.value != null}" styleClass="row">
+                <h:graphicImage alt="#{cc.attrs.value}" library="app"
+                                name="#{cc.attrs.value}"
+                                rendered="#{!cc.attrs.editable}"/>
+                <h:graphicImage alt="#{cc.attrs.label}" library="app"
+                                name="#{cc.attrs.tempImageKey}"
+                                rendered="#{cc.attrs.label and cc.attrs.value.blob != null}"/>
+            </h:panelGroup>
+        </div>
+    </composite:implementation>
+</ui:composition>

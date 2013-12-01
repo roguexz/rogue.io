@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--
+- Template for listing entities in a tabular form.
+-
+- ==================
+- Parameters
+- ==================
+-
+- dataTableId        The id of the dataTable component.
+-                        Default value is dataTable.
+-
+- ==================
+- Templated Sections
+- ==================
+- navigation.header          The section for populating the navigation links.
+- section.content            The section for populating the actual content, like the data table.
+- action.bar                 The section for populating the actions on the toolbar.
+-->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:p="http://primefaces.org/ui">
+
+    <h:panelGroup rendered="#{controllerCtx.current != null}">
+
+        <ui:param name="dataTableId" value="#{dataTableId == null ? 'dataTable' : dataTableId}"/>
+
+        <ui:insert name="action.bar">
+            <div class="row well form-horizontal" style="padding:5px;">
+                <ui:insert name="breadcrumbs">
+                    <ul class="breadcrumb col-md-8" style="margin: 0; padding-top: 8px; background-color:transparent">
+                        <ui:repeat value="#{controllerCtx.current.parentHierarchy}" var="ec">
+                            <li>
+                                <h:link outcome="#{ec.listingPageMetadata.outcome}"
+                                        value="#{ec.listingPageMetadata.name}"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{ec.detailsPageMetadata.outcome}"
+                                        value="#{ec.selectedResource}"/>
+                            </li>
+                        </ui:repeat>
+                        <li>
+                            <h:link outcome="#{controllerCtx.current.listingPageMetadata.outcome}"
+                                    value="#{controllerCtx.current.listingPageMetadata.name}"/>
+                        </li>
+                    </ul>
+                </ui:insert>
+                <!-- Actions -->
+                <ui:insert name="actions">
+                    <div class="pull-right btn-group">
+                        <p:commandLink alt="New" title="New"
+                                       actionListener="#{controllerCtx.current.newCommand.invokeActionListener}"
+                                       action="#{controllerCtx.current.newCommand.invokeAction}"
+                                       immediate="#{controllerCtx.current.newCommand.immediate}"
+                                       rendered="#{controllerCtx.current.newCommand.allowed}"
+                                       styleClass="btn btn-default">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </p:commandLink>
+
+                        <p:commandLink alt="Delete" title="Delete"
+                                       action="#{controllerCtx.current.deleteItemPreviewCommand.invokeAction}"
+                                       actionListener="#{controllerCtx.current.deleteItemPreviewCommand.invokeActionListener}"
+                                       rendered="#{controllerCtx.current.deleteItemPreviewCommand.allowed}"
+                                       styleClass="btn btn-default">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </p:commandLink>
+                    </div>
+                    <h:panelGroup layout="block" rendered="#{controllerCtx.current.searchCommand.allowed}"
+                                  styleClass="input-group pull-right col-md-3">
+                        <h:inputText id="searchText" value="#{controllerCtx.current.searchCommand.selectedResource}"
+                                     styleClass="form-control" pt:placeholder="Search"/>
+                        <p:commandLink alt="Search" title="Search"
+                                       actionListener="#{controllerCtx.current.searchCommand.invokeActionListener}"
+                                       action="#{controllerCtx.current.searchCommand.invokeAction}"
+                                       immediate="#{controllerCtx.current.searchCommand.immediate}"
+                                       rendered="#{controllerCtx.current.searchCommand.allowed}"
+                                       id="searchBtn"
+                                       update="#{dataTableId}" styleClass="input-group-addon btn btn-default">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </p:commandLink>
+                        <p:defaultCommand target="searchBtn" rendered=""/>
+                    </h:panelGroup>
+                </ui:insert>
+            </div>
+        </ui:insert>
+
+        <div class="row">
+            <ui:insert name="section.content">
+                No items to display
+            </ui:insert>
+        </div>
+    </h:panelGroup>
+    <h:panelGroup rendered="#{controllerCtx.current == null}" styleClass="alert alert-info" layout="block">
+        <h4 class="alert-heading">Resource Not Found</h4>
+        Controller Reference Not Set.
+    </h:panelGroup>
+</ui:composition>

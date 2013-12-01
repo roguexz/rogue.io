@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!-- An extension of the h:messages tag that applies the appropriate style elements -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:rf="http://rogue.io/jsf/functions"
+                xmlns:p="http://primefaces.org/ui">
+    <composite:interface name="item" displayName="item">
+        <composite:attribute name="globalOnly" default="false" type="boolean"/>
+        <composite:attribute name="showDetail" default="false" type="boolean"/>
+    </composite:interface>
+    <composite:implementation>
+        <p:outputPanel autoUpdate="true" styleClass="row">
+            <ui:repeat value="#{cc.attrs.globalOnly ? rf:globalMessageList() : facesContext.messageList}" var="msg">
+                <div class="alert #{msg.severity.ordinal == 3 ? 'alert-danger': (msg.severity.ordinal == 2) ? 'alert-danger' : (msg.severity.ordinal == 1) ? 'alert-warning' : 'alert-info'}"
+                     style="margin-bottom: 4px;">
+                    <strong style="margin-right: 5px;">#{msg.summary}</strong>
+                    <h:panelGroup rendered="#{cc.attrs.showDetail}">
+                        #{msg.detail}
+                    </h:panelGroup>
+                </div>
+                #{rf:markMessageRendered(msg)}
+            </ui:repeat>
+        </p:outputPanel>
+    </composite:implementation>
+</ui:composition>

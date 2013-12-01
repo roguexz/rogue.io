@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--
+   - Input component for selecting a time interval.
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:rf="http://rogue.io/jsf/functions"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+    <composite:interface name="inputDateTimeInterval" displayName="Input date time interval">
+        <composite:attribute name="selector" type="rogue.app.framework.view.faces.bean.IntervalSelector"
+                             default="#{intervalSelector}"/>
+    </composite:interface>
+    <composite:implementation>
+        <style type="text/css">
+            .fc-today {
+                background-image: none;
+                background-color: inherit;
+            }
+
+            .fc-agenda-slots th {
+                height: 50px;
+            }
+        </style>
+        <div id="#{cc.clientId}">
+            <p:schedule value="#{cc.attrs.selector.scheduleModel}" widgetVar="scheduleView"
+                        allDaySlot="false" aspectRatio="0.75" view="agendaWeek" editable="true" showHeader="false"
+                        initialDate="#{rf:convertToDate(cc.attrs.selector.selectedInterval.start)}"
+                        slotMinutes="#{cc.attrs.selector.duration.standardMinutes}"
+                        minTime="#{cc.attrs.selector.dayStartTime}" maxTime="#{cc.attrs.selector.dayEndTime}">
+                <f:attribute name="setFirstDayToInitial" value="true"/>
+                <p:ajax event="dateSelect" listener="#{cc.attrs.selector.selectDateTimeInterval}"
+                        onstart="return verifySelectedDateTime(event, new Date(#{cc.attrs.selector.minimumTimeInterval.start.millis}));"
+                        update="@this"/>
+            </p:schedule>
+        </div>
+    </composite:implementation>
+</ui:composition>

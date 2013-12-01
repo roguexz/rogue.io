@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!--
+   - Template for displaying details of a particular entity.
+   -
+   - ==================
+   - Parameters
+   - ==================
+   - toolbarTitle       The title of the tool bar.
+   -
+   - ==================
+   - Templated Sections
+   - ==================
+   - section.content            The section for populating the actual content, like the data table.
+   -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:r="http://xmlns.jcp.org/jsf/component">
+
+    <r:group rendered="#{controllerCtx.current != null}">
+
+        <ui:insert name="action.bar">
+            <div class="row well" style="padding:5px;">
+                <ui:insert name="breadcrumbs">
+                    <ul class="breadcrumb col-md-8" style="margin: 0; padding-top: 8px; background-color:transparent">
+                        <ui:repeat value="#{controllerCtx.current.parentHierarchy}" var="ec">
+                            <li>
+                                <h:link outcome="#{ec.listingPageMetadata.outcome}"
+                                        value="#{ec.listingPageMetadata.name}"/>
+                            </li>
+                            <li>
+                                <h:link outcome="#{ec.detailsPageMetadata.outcome}"
+                                        value="#{ec.selectedResource}"/>
+                            </li>
+                        </ui:repeat>
+                        <r:group rendered="#{!controllerCtx.current.singleSelection}">
+                            <li>
+                                <h:link outcome="#{controllerCtx.current.listingPageMetadata.outcome}"
+                                        value="#{controllerCtx.current.listingPageMetadata.name}"/>
+                            </li>
+                        </r:group>
+                        <li>
+                            <a href="#">#{controllerCtx.current.selectedResource.id==null ? 'New Entry' : controllerCtx.current.selectedResource}</a>
+                        </li>
+                    </ul>
+                </ui:insert>
+                <!-- Actions -->
+                <ui:insert name="actions">
+                    <div class="pull-right btn-group">
+                        <p:commandLink alt="Edit" title="Edit"
+                                       actionListener="#{controllerCtx.current.editCommand.invokeActionListener}"
+                                       action="#{controllerCtx.current.editCommand.invokeAction}"
+                                       immediate="#{controllerCtx.current.editCommand.immediate}"
+                                       rendered="#{controllerCtx.current.selectedResource != null and !controllerCtx.current.selectedResource.mutable and controllerCtx.current.editCommand.allowed}"
+                                       styleClass="btn btn-default">
+                            <f:setPropertyActionListener value="#{controllerCtx.current.selectedResource}"
+                                                         target="#{controllerCtx.current.editCommand.selectedResource}"/>
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </p:commandLink>
+                        <p:commandLink alt="Save" title="Save"
+                                       ajax="false" styleClass="btn btn-default"
+                                       actionListener="#{controllerCtx.current.saveCommand.invokeActionListener}"
+                                       action="#{controllerCtx.current.saveCommand.invokeAction}"
+                                       rendered="#{controllerCtx.current.selectedResource.mutable and controllerCtx.current.saveCommand.allowed}"
+                                       update="attributesSection">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </p:commandLink>
+                        <p:commandLink alt="Close" title="Close" immediate="true" styleClass="btn btn-default"
+                                       rendered="#{!controllerCtx.current.singleSelection and controllerCtx.current.cancelCommand.allowed}"
+                                       actionListener="#{controllerCtx.current.cancelCommand.invokeActionListener}"
+                                       action="#{controllerCtx.current.cancelCommand.invokeAction}">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </p:commandLink>
+                    </div>
+                </ui:insert>
+            </div>
+        </ui:insert>
+
+        <div class="row" style="padding: 5px">
+            <div class="#{not empty controllerCtx.current.childControllersList ? 'col-md-8' : 'col-md-12'}">
+                <ui:insert name="section.content">
+                </ui:insert>
+            </div>
+            <h:panelGroup id="sidebar" layout="block" styleClass="col-md-4"
+                          rendered="#{not empty controllerCtx.current.childControllersList}">
+                <ui:insert name="section.related.content">
+                    <div class="well sidebar-nav">
+                        <h5>Additional Information</h5>
+                        <ul class="nav nav-pills nav-stacked">
+                            <ui:repeat value="#{controllerCtx.current.childControllersList}" var="childController">
+                                <li class="#{controllerCtx.current.selectedResource.id == null ? 'disabled' : ''}">
+                                    <p:commandLink value="#{childController.listingPageMetadata.name}"
+                                                   style="padding-top:5px; padding-bottom: 0px;"
+                                                   disabled="#{controllerCtx.current.selectedResource.id == null}"
+                                                   action="#{childController.listingPageMetadata.getOutcome}"
+                                                   rendered="#{!childController.singleSelection}">
+                                        <f:setPropertyActionListener value="#{controllerCtx.current.selectedResource}"
+                                                                     target="#{childController.parentResource}"/>
+                                    </p:commandLink>
+                                    <p:commandLink value="#{childController.detailsPageMetadata.name}"
+                                                   style="padding-top:5px; padding-bottom: 0px;"
+                                                   disabled="#{controllerCtx.current.selectedResource.id == null}"
+                                                   action="#{childController.detailsPageMetadata.getOutcome}"
+                                                   rendered="#{childController.singleSelection}">
+                                        <f:setPropertyActionListener value="#{controllerCtx.current.selectedResource}"
+                                                                     target="#{childController.parentResource}"/>
+                                    </p:commandLink>
+                                </li>
+                            </ui:repeat>
+                        </ul>
+                        <ui:insert name="section.auxillary.content">
+                        </ui:insert>
+                    </div>
+                </ui:insert>
+            </h:panelGroup>
+        </div>
+    </r:group>
+    <h:panelGroup rendered="#{controllerCtx.current == null}" styleClass="alert alert-info" layout="block">
+        <h4 class="alert-heading">Resource Not Found</h4>
+        Controller reference Not Set.
+    </h:panelGroup>
+</ui:composition>

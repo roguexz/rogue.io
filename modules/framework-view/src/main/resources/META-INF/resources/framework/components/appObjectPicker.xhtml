@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:composite="http://xmlns.jcp.org/jsf/composite"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:rf="http://rogue.io/jsf/functions">
+    <composite:interface name="appObjectPicker" displayName="AppObject Picker">
+        <composite:attribute name="header" type="java.lang.String" default="Select User"/>
+        <composite:attribute name="controllerRef" required="true"
+                             type="rogue.app.framework.view.faces.AbstractFacesController"/>
+        <composite:attribute name="returnListener"
+                             method-signature="void processReturn(rogue.app.framework.view.faces.event.ReturnEvent)"/>
+        <composite:attribute name="method" type="java.lang.String"/>
+        <composite:attribute name="target" type="java.lang.Object"/>
+        <composite:attribute name="title" default="Select object"/>
+        <composite:attribute name="update" default=""/>
+    </composite:interface>
+    <composite:implementation>
+        <p:dialog id="picker" header="#{cc.attrs.header}" modal="true">
+            <f:attribute name="update_client_ids" value="#{cc.attrs.update}"/>
+
+            <div class="pull-right" style="margin-bottom: 4px;">
+                <p:commandLink alt="Search" title="Search"
+                               actionListener="#{cc.attrs.controllerRef.searchCommand.invokeActionListener}"
+                               action="#{cc.attrs.controllerRef.searchCommand.invokeAction}"
+                               immediate="#{cc.attrs.controllerRef.searchCommand.immediate}"
+                               id="searchBtn" update="dataTable" styleClass="btn">
+                    <i class="icon-search"></i>
+                </p:commandLink>
+            </div>
+            <h:inputText value="#{cc.attrs.controllerRef.searchCommand.selectedResource}"
+                         style="margin-right: 5px;"
+                         styleClass="pull-right search-query"/>
+            <p:defaultCommand target="searchBtn"/>
+            <h:panelGroup
+                    rendered="#{cc.attrs.controllerRef.listingPathMetadata != null and cc.attrs.controllerRef.listingPathMetadata.fragment}">
+                <ui:include src="#{cc.attrs.controllerRef.listingPathMetadata.pagePath}">
+                    <ui:param name="controllerRef" value="#{cc.attrs.controllerRef}"/>
+                </ui:include>
+            </h:panelGroup>
+        </p:dialog>
+        <button class="btn" title="#{cc.attrs.title}"
+                onclick="#{rf:resolveWidgetVar(component.children[0])}.show();return false;">
+            <i class="icon-search"/>
+        </button>
+    </composite:implementation>
+</ui:composition>

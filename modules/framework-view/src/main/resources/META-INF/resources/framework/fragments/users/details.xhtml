@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:fc="http://xmlns.jcp.org/jsf/composite/framework/components"
+                xmlns:rf="http://rogue.io/jsf/functions"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/framework/templates/admin/resource-details.xhtml">
+    <ui:define name="section.content">
+        <div class="form-horizontal">
+            <fc:inputText label="First name" value="#{controllerCtx.current.selectedResource.firstName}"
+                          placeholder="First name" required="true" requiredMessage="First name is mandatory"
+                          helpText="Specify the person's first name"
+                          editable="#{controllerCtx.current.selectedResource.mutable}"/>
+            <fc:inputText label="Last name" value="#{controllerCtx.current.selectedResource.lastName}"
+                          placeholder="Last name" required="true" requiredMessage="Last name is required"
+                          editable="#{controllerCtx.current.selectedResource.mutable}"
+                          helpText="Specify the attribute name"/>
+            <fc:inputText label="Phone" value="#{controllerCtx.current.selectedResource.primaryPhoneNumber}"
+                          placeholder="Phone number" required="true" requiredMessage="Phone number is required"
+                          prependText="+91"
+                          editable="#{controllerCtx.current.selectedResource.mutable}"/>
+
+            <fc:inputText label="Email" value="#{controllerCtx.current.selectedResource.primaryEmail}"
+                          placeholder="Email address" required="true" requiredMessage="Email is required"
+                          editable="#{controllerCtx.current.selectedResource.mutable}">
+                <f:validator for="value" validatorId="user.email.validator"/>
+            </fc:inputText>
+
+            <fc:selectOneMenu label="Account Status" value="#{controllerCtx.current.selectedResource.accountStatus}"
+                              options="#{rf:getEnumValues('rogue.app.framework.security.AccountStatus')}"
+                              editable="#{controllerCtx.current.selectedResource.mutable}" noSelectionOption="false">
+                <f:converter converterId="rogue.app.framework.security.AccountStatus" for="selectOptions"/>
+            </fc:selectOneMenu>
+        </div>
+    </ui:define>
+</ui:composition>

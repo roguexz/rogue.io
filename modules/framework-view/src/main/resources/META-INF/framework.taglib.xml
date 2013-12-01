@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<facelet-taglib version="2.2"
+                xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facelettaglibrary_2_2.xsd">
+
+    <namespace>http://rogue.io/jsf/functions</namespace>
+
+    <function>
+        <function-name>property</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>
+            java.lang.String getApplicationProperty(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    <function>
+        <function-name>getSocialLoginLink</function-name>
+        <function-class>rogue.app.framework.view.util.SecurityUtils</function-class>
+        <function-signature>java.lang.String getSocialLoginLink(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <function-name>getEnumValues</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.lang.Object[] getEnumValues(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <function-name>getEnum</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.lang.Object getEnum(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <function-name>truncate</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.lang.String truncate(java.lang.String,int)</function-signature>
+    </function>
+    <function>
+        <function-name>subList</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.util.List subList(java.util.List,int,int)</function-signature>
+    </function>
+    <function>
+        <function-name>convertToDate</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.util.Date convertToDate(org.joda.time.DateTime)</function-signature>
+    </function>
+    <function>
+        <function-name>globalMessageList</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.util.List getGlobalMessageList()</function-signature>
+    </function>
+    <function>
+        <function-name>markMessageRendered</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>void markFacesMessageRendered(javax.faces.application.FacesMessage)</function-signature>
+    </function>
+    <function>
+        <function-name>formatDate</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.lang.String formatDate(java.util.Date,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <function-name>formatDateTime</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>
+            java.lang.String formatDateTime(org.joda.time.DateTime,java.lang.String)
+        </function-signature>
+    </function>
+    <function>
+        <function-name>formattedString</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.lang.String getFormattedString(java.lang.Object)</function-signature>
+    </function>
+    <function>
+        <function-name>resolveWidgetVar</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.lang.String resolveWidgetVariable(javax.faces.component.UIComponent)
+        </function-signature>
+    </function>
+    <function>
+        <function-name>nextComponent</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>javax.faces.component.UIComponent nextUIComponent(javax.faces.component.UIComponent)
+        </function-signature>
+    </function>
+    <function>
+        <function-name>formatInterval</function-name>
+        <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
+        <function-signature>java.lang.String formatInterval(org.joda.time.Interval)</function-signature>
+    </function>
+</facelet-taglib>
