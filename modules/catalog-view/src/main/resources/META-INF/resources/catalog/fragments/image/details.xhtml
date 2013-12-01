@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:fc="http://xmlns.jcp.org/jsf/composite/framework/components"
+                xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui"
+                xmlns:r="http://xmlns.jcp.org/jsf/component"
+                template="/framework/templates/admin/resource-details.xhtml">
+    <ui:param name="entity" value="#{controllerCtx.current.selectedResource}"/>
+    <ui:define name="section.content">
+        <h:panelGroup layout="block" id="imageDetails" class="col-md-8">
+            <div class="form-horizontal">
+                <fc:inputText label="Name" value="#{entity.name}" editable="false"
+                              placeholder="Select a file via the upload button"/>
+                <fc:inputText label="Description" value="#{entity.description}" editable="#{entity.mutable}"
+                              placeholder="A short description about this resource"/>
+
+                <fc:selectOneMenu label="Type" value="#{entity.resourceType}"
+                                  options="#{controllerCtx.current.imageTypes}"
+                                  editable="#{entity.mutable}" noSelectionOption="false"
+                                  validator="#{controllerCtx.current.validateImageType}"/>
+
+                <fc:inputText label="Mime type" value="#{entity.mimeType}" editable="false"
+                              placeholder="E.g., image/png"
+                              helpText="The mime type of the resource."/>
+            </div>
+        </h:panelGroup>
+
+        <div class="col-md-4">
+            <r:group rendered="#{entity.mutable}">
+                <p:message for="up1" id="imgUploadMessages"/>
+                <p:fileUpload mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                              auto="true" uploadLabel="Upload"
+                              fileUploadListener="#{controllerCtx.current.handleFileUpload}"
+                              id="up1" sizeLimit="1000000"
+                              oncomplete="updateImage()">
+                </p:fileUpload>
+                <p:remoteCommand name="updateImage"
+                                 update="defaultImage imgUploadMessages imageDetails"/>
+                <hr/>
+            </r:group>
+            <h:panelGroup layout="block" id="defaultImage">
+                <h:graphicImage alt="#{entity.name}" styleClass="img-responsive" library="app"
+                                name="#{entity.mutable ? controllerCtx.current.temporaryResourceId : entity.idAsString}"
+                                rendered="#{entity!= null and entity.blob != null}"/>
+            </h:panelGroup>
+        </div>
+    </ui:define>
+</ui:composition>
