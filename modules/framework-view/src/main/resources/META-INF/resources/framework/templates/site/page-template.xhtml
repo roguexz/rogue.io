@@ -52,7 +52,7 @@
         <ui:insert name="page.navigation.bar">
             <div class="navbar navbar-inverse navbar-fixed-top">
                 <div class="container">
-                    <div class="navbar-header">
+                    <div class="col-md-1 navbar-header">
                         <button type="button" class="navbar-toggle" data-toggle="collapse"
                                 data-target=".navbar-collapse">
                             <span class="icon-bar"></span>
@@ -63,7 +63,7 @@
                             #{rf:property("site.name", "Rogue.IO")}
                         </h:outputLink>
                     </div>
-                    <div class="navbar-collapse collapse">
+                    <div class="col-md-10 navbar-collapse collapse">
                         <ui:insert name="page.navigation.menus">
                         </ui:insert>
                         <p:ajaxStatus styleClass="pull-right" style="padding-top:10px;">
@@ -76,6 +76,9 @@
                         </p:ajaxStatus>
                     </div>
                     <!--/.nav-collapse -->
+                    <div class="col-md-1 pull-right">
+                        <fc:userLogin/>
+                    </div>
                 </div>
             </div>
         </ui:insert>

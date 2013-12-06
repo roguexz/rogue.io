@@ -61,7 +61,6 @@ import java.util.Objects;
 @EntityImplementationFor(User.class)
 public class UserEntity extends PersistentEntity<User> implements User
 {
-    @Column(nullable = false)
     private String firstName;
     @Column(nullable = false)
     private String lastName;
@@ -205,7 +204,14 @@ public class UserEntity extends PersistentEntity<User> implements User
     {
         if (displayName == null)
         {
-            displayName = firstName + " " + lastName;
+            if (!StringUtils.isEmpty(firstName))
+            {
+                displayName = firstName + " " + lastName;
+            }
+            else
+            {
+                displayName = lastName;
+            }
         }
         return displayName;
     }

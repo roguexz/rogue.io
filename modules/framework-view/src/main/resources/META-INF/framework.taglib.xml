@@ -30,11 +30,6 @@
         </function-signature>
     </function>
     <function>
-        <function-name>getSocialLoginLink</function-name>
-        <function-class>rogue.app.framework.view.util.SecurityUtils</function-class>
-        <function-signature>java.lang.String getSocialLoginLink(java.lang.String)</function-signature>
-    </function>
-    <function>
         <function-name>getEnumValues</function-name>
         <function-class>rogue.app.framework.view.util.AppFunctions</function-class>
         <function-signature>java.lang.Object[] getEnumValues(java.lang.String)</function-signature>

@@ -23,9 +23,9 @@
         <el-resolver>rogue.app.framework.view.el.AppELResolver</el-resolver>
     </application>
     <lifecycle>
-        <phase-listener>
+        <!--phase-listener>
             rogue.app.framework.internal.view.faces.listener.FrameworkPhaseListener
-        </phase-listener>
+        </phase-listener-->
     </lifecycle>
 
 </faces-config>

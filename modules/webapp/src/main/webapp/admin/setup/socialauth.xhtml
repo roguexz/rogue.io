@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2013, Rogue.IO
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:fc="http://xmlns.jcp.org/jsf/composite/framework/components"
+                xmlns:p="http://primefaces.org/ui"
+                template="#{site.adminPageTemplate}">
+
+    <ui:param name="formType" value="multipart/form-data"/>
+    <ui:define name="page.title">Social Authentication Providers</ui:define>
+    <ui:define name="page.content">
+        <span class="lead">C</span>onfigure the various social authentication providers using which a user can log in
+        to the application.
+        <div class="pull-right">
+            <p:commandButton value="Save" action="#{systemConfiguration.invokeSaveCommand}" update="@all"
+                             styleClass="btn btn-primary"/>
+        </div>
+        <p/>
+        <hr/>
+        <h:panelGroup id="configOptions" styleClass="form-horizontal">
+            <fieldset>
+                <h5><span class="badge">1</span> Facebook</h5>
+
+                <fc:inputText label="App ID / API Key" placeholder="The API key issued by the third party site."
+                              value="#{systemConfiguration.appProperties['socialauth.graph.facebook.com.consumer_key']}"
+                              editable="true" required="true" requiredMessage="Specify the API key."
+                              helpText="You can get your API key from https://developers.facebook.com/apps"/>
+
+                <fc:inputText label="App Secret" placeholder="The application secret issued by the third party site"
+                              value="#{systemConfiguration.appProperties['socialauth.graph.facebook.com.consumer_secret']}"
+                              editable="true" helpText="That message that you see at the bottom of the page."/>
+
+                <fc:inputText label="Custom Permissions" placeholder="E.g., email,user_birthday,user_location"
+                              value="#{systemConfiguration.appProperties['socialauth.graph.facebook.com.custom_permissions']}"
+                              editable="true"
+                              helpText="Specify any custom permissions if you want. Otherwise a default value will be used."/>
+            </fieldset>
+        </h:panelGroup>
+    </ui:define>
+
+</ui:composition>

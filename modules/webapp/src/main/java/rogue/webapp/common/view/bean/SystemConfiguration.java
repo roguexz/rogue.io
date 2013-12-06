@@ -24,17 +24,19 @@ import rogue.app.framework.model.BinaryResource;
 import rogue.app.framework.model.attr.Attribute;
 import rogue.app.framework.model.attr.Attributes;
 import rogue.app.framework.persistence.JpaController;
+import rogue.app.framework.persistence.JpaQuery;
 import rogue.app.framework.view.util.AppFunctions;
 import rogue.app.framework.view.util.FacesUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIInput;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.validator.ValidatorException;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -46,15 +48,14 @@ public class SystemConfiguration implements Serializable
 {
 
     private static final String[] configKeys = {
-            "site.name", "site.copyright", "site.admin.url", "ipinfodb.key", "graph.facebook.com.consumer_key",
-            "graph.facebook.com.consumer_secret", "graph.facebook.com.custom_permissions", "site.email.id",
+            "site.name", "site.copyright", "site.admin.url", "ipinfodb.key", "site.email.id",
             "site.email.display.name", "admin.email.id", "calendar.service.account"
     };
 
     private static final String[] binaryResourceKeys = {"calendar.service.private.key"};
 
-    private Map<String, String> appProperties;
-    private Map<String, BinaryResource> appBinaryResources;
+    private Map<String, String> appProperties = new HashMap<>(20);
+    private Map<String, BinaryResource> appBinaryResources = new HashMap<>(3);
 
     public SystemConfiguration()
     {
@@ -62,19 +63,16 @@ public class SystemConfiguration implements Serializable
 
     public Map<String, String> getAppProperties()
     {
-        initConfiguration();
         return appProperties;
     }
 
     public Map<String, BinaryResource> getAppBinaryResources()
     {
-        initConfiguration();
         return appBinaryResources;
     }
 
     public void handleFileUpload(FileUploadEvent event)
     {
-        initConfiguration();
         UIInput component = (UIInput) event.getComponent();
         String key = (String) component.getAttributes().get("property.key");
         key = StringUtils.trim(key);
@@ -126,7 +124,10 @@ public class SystemConfiguration implements Serializable
     {
         for (Map.Entry<String, String> entry : appProperties.entrySet())
         {
-            saveAttribute(entry.getKey(), entry.getValue());
+            if (!StringUtils.isEmpty(entry.getValue()))
+            {
+                saveAttribute(entry.getKey(), entry.getValue());
+            }
         }
 
         JpaController controller = JpaController.getController(BinaryResource.class);
@@ -175,33 +176,39 @@ public class SystemConfiguration implements Serializable
         }
     }
 
+    @PostConstruct
     private void initConfiguration()
     {
-        if (appProperties == null)
+        for (String s : configKeys)
         {
-            appProperties = new HashMap<>();
-            for (String s : configKeys)
-            {
-                appProperties.put(s, AppFunctions.getApplicationProperty(s, null));
-            }
+            appProperties.put(s, AppFunctions.getApplicationProperty(s, null));
         }
 
-        if (appBinaryResources == null)
+        // Load the social auth stuff.
+        JpaController<Attribute> controller = JpaController.getController(Attribute.class);
+        Map<String, Object> queryParams = new HashMap<>(3);
+        queryParams.put("nameSpace", Attributes.SYSTEM_NAMESPACE);
+        queryParams.put("appObjRefKey", null);
+        queryParams.put("layerKey", null); // base definitions only.
+        queryParams.put("queryString", "socialauth.%");
+        JpaQuery listingQuery = new JpaQuery("AttributeEntity.searchByName", true, queryParams);
+        List<Attribute> list = controller.find(listingQuery);
+        for (Attribute attr : list)
         {
-            appBinaryResources = new HashMap<>();
+            appProperties.put(attr.getName(), attr.getValue());
+        }
+        queryParams.clear();
 
-            JpaController controller = JpaController.getController(BinaryResource.class);
-            Map<String, Object> queryParams = new HashMap<>(3);
-            queryParams.put("appObjRefKey", null);
-            queryParams.put("nameSpace", Attributes.SYSTEM_NAMESPACE);
+        JpaController<BinaryResource> binaries = JpaController.getController(BinaryResource.class);
+        queryParams.put("appObjRefKey", null);
+        queryParams.put("nameSpace", Attributes.SYSTEM_NAMESPACE);
 
-            for (String s : binaryResourceKeys)
-            {
-                queryParams.put("queryString", s.toLowerCase());
-                BinaryResource resource = (BinaryResource) controller
-                        .executeNamedQuerySingleResult("BinaryResourceEntity.findByName", queryParams);
-                appBinaryResources.put(s, resource);
-            }
+        for (String s : binaryResourceKeys)
+        {
+            queryParams.put("queryString", s.toLowerCase());
+            BinaryResource resource = binaries.executeNamedQuerySingleResult(
+                    "BinaryResourceEntity.findByName", queryParams);
+            appBinaryResources.put(s, resource);
         }
     }
 }
