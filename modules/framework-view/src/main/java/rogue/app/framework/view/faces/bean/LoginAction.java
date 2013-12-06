@@ -5,10 +5,7 @@ import rogue.app.framework.view.faces.CommandInvocation;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Command invocation that can be associated with a login action.
@@ -46,7 +43,10 @@ public class LoginAction extends CommandInvocation<String>
         if (loginLinks == null)
         {
             loginLinks = new ArrayList<>();
-            loginLinks.addAll(authenticationManager.get().getLoginLinks().entrySet());
+            for (Map.Entry<String, String> entry : authenticationManager.get().getLoginLinks().entrySet())
+            {
+                loginLinks.add(new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue()));
+            }
         }
         return loginLinks;
     }
