@@ -16,6 +16,8 @@
 
 package rogue.app.framework.view.urisupport.internal;
 
+import rogue.app.framework.view.urisupport.URIAction;
+
 import java.util.logging.Logger;
 
 /**
@@ -32,7 +34,7 @@ public final class URIUtil
      * The JDK logger that is used by all other classes within this module. The logger is scoped to the package of this
      * class.
      */
-    public static final Logger LOGGER = Logger.getLogger(URIUtil.class.getPackage().getName());
+    public static final Logger LOGGER = Logger.getLogger(URIAction.class.getPackage().getName());
 
     private static String faceletSuffix;
     private static String facesServletName;
