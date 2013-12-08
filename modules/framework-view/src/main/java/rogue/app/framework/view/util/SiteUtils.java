@@ -20,12 +20,14 @@ package rogue.app.framework.view.util;
 import com.google.apphosting.api.ApiProxy;
 import com.google.common.base.Preconditions;
 import org.apache.commons.lang.StringUtils;
+import rogue.app.framework.internal.view.servlet.WebContext;
 
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
 /**
@@ -45,9 +47,22 @@ public class SiteUtils
      */
     public static String getBaseSiteURL()
     {
-        ApiProxy.Environment env = ApiProxy.getCurrentEnvironment();
-        String baseSiteURL = (String) env.getAttributes().get("com.google.appengine.runtime.default_version_hostname");
-        baseSiteURL = "http://" + baseSiteURL;
+        HttpServletRequest request = WebContext.getRequest();
+        String baseSiteURL = null;
+        if (request == null)
+        {
+            ApiProxy.Environment env = ApiProxy.getCurrentEnvironment();
+            baseSiteURL = (String) env.getAttributes().get("com.google.appengine.runtime.default_version_hostname");
+            baseSiteURL = "http://" + baseSiteURL;
+        }
+        else
+        {
+            baseSiteURL = request.getScheme() + "://" + request.getServerName();
+            if (request.getServerPort() != 80 && request.getServerPort() != 443)
+            {
+                baseSiteURL = baseSiteURL + ":" + request.getServerPort();
+            }
+        }
         return baseSiteURL;
     }
 
