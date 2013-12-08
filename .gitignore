@@ -4,11 +4,13 @@ appengine-java-sdk/
 
 # The build artifacts directory
 tmp/
+build/
 
 # The project files - those should be created locally
 *.iws
 *.ipr
 *.iml
+.idea/
 
 # Other build artifacts
 .gradle

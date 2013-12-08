@@ -21,7 +21,7 @@ dependencies {
     compile 'com.google.http-client:google-http-client-jackson:1.16.0-rc'
     compile 'org.reflections:reflections:0.9.9-RC1'
     compile 'com.google.guava:guava:14.0.1'
-    compile 'org.jboss.weld.servlet:weld-servlet:2.0.3.Final'
+    compile 'org.jboss.weld.servlet:weld-servlet:2.1.0.Final'
     // compile 'javax.ws.rs:javax.ws.rs-api:2.0'
 
     // Provided in the container

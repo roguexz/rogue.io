@@ -24,7 +24,6 @@ dependencies {
     compile 'org.primefaces:primefaces:' + rootProject.primeFacesVersion
     compile 'org.glassfish.web:javax.el:2.2.6'
     compile 'joda-time:joda-time:2.3'
-    compile 'org.jboss.weld.servlet:weld-servlet:2.0.3.Final'
     compile('org.brickred:socialauth:4.2') {
         exclude group: 'javax.servlet' // This is provided by the container itself.
     }
