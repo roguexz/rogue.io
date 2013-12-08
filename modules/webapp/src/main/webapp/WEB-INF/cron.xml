@@ -19,6 +19,6 @@
     <cron>
         <url>/tasks/sessionCleaner</url>
         <description>Clean up stale sessions</description>
-        <schedule>every 2 hours</schedule>
+        <schedule>every 12 hours</schedule>
     </cron>
 </cronentries>
