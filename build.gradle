@@ -35,8 +35,6 @@ ext {
 
 allprojects {
 
-    apply plugin: 'idea'
-
     buildDir = file(rootDir.path + File.separator + 'tmp' + File.separator + rootProject.relativePath(projectDir))
 
     // Internal variables - do not modify, unless you know what you are doing.
@@ -57,12 +55,6 @@ allprojects {
         }
     }
 
-    idea {
-        project {
-            languageLevel = '1.7'
-        }
-    }
-
     apply from: rootProject.file('infra/gae-integration.gradle')
 }
 
@@ -76,3 +68,31 @@ subprojects { project ->
 task setupEnv(dependsOn: 'setup_GAE_SDK') << {
 }
 
+task generateDocs(type: Javadoc, description: 'Generates Javadoc for all projects') {
+    title = rootProject.name
+    destinationDir = new File(project.buildDir, 'javadoc')
+
+    options {
+        encoding = 'UTF-8'
+    }
+
+    // Note: The closures below are executed lazily.
+    source {
+        FileTree fileTree = null
+        subprojects*.sourceSets*.main*.allSource.each({
+            if (fileTree == null) {
+                fileTree = it.matching {
+                    exclude '**/internal/**'
+                    include '**/*.java'
+                }
+            } else {
+                fileTree = fileTree + it.matching {
+                    exclude '**/internal/**'
+                    include '**/*.java'
+                }
+            }
+        })
+
+        return fileTree;
+    }
+}
